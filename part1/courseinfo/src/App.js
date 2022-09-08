@@ -51,7 +51,7 @@ const App = () => {
       <Content  p2={part2['name']} ex2={part2['exercises']}/>
       <Content  p3={part3['name']} ex3={part3['exercises']}/>
 
-      <Total ex1 = {part1['exercises']} ex2 = {part2['exercises']} ex3 = {part1['exercises']}/>
+      <Total ex1 = {part1['exercises']} ex2 = {part2['exercises']} ex3 = {part3['exercises']}/>
     </div>
   )
 }

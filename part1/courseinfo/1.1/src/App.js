@@ -8,9 +8,9 @@ const Header = (props) => {
 const Content = (props) => {
   return (
     <div>
-      <div><p>{props.p1} {props.ex1}</p></div>
-      <div><p>{props.p2} {props.ex2}</p></div>
-      <div><p>{props.p3} {props.ex3}</p></div>
+      <p>{props.p1} {props.ex1}</p>
+      <p>{props.p2} {props.ex2}</p>
+      <p>{props.p3} {props.ex3}</p>
     </div>
   )
 }

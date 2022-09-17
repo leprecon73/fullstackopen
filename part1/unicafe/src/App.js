@@ -19,17 +19,19 @@ const Statistics = (props) => {
     } 
 
     return (
-      <div>
+      
         <table>
-          <StatisticLine text="good" value ={good} />
-          <StatisticLine text="neutral" value ={neutral} />
-          <StatisticLine text="bad" value ={bad} />
-          
-          <tr><td>all</td><td>{bad+good+neutral}</td></tr>
-          <tr><td>average</td><td>{(bad * (-1) + good)/(bad+good+neutral)}</td></tr>
-          <tr><td>positive</td><td>{(good/(bad+good+neutral)) * 100} %</td></tr>
+          <tbody>
+            <StatisticLine text="good" value ={good} />
+            <StatisticLine text="neutral" value ={neutral} />
+            <StatisticLine text="bad" value ={bad} />
+            
+            <tr><td>all</td><td>{bad+good+neutral}</td></tr>
+            <tr><td>average</td><td>{(bad * (-1) + good)/(bad+good+neutral)}</td></tr>
+            <tr><td>positive</td><td>{(good/(bad+good+neutral)) * 100} %</td></tr>
+          </tbody>
         </table>
-      </div>
+      
     )
   }
 

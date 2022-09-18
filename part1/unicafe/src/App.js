@@ -25,10 +25,9 @@ const Statistics = (props) => {
             <StatisticLine text="good" value ={good} />
             <StatisticLine text="neutral" value ={neutral} />
             <StatisticLine text="bad" value ={bad} />
-            
-            <tr><td>all</td><td>{bad+good+neutral}</td></tr>
-            <tr><td>average</td><td>{(bad * (-1) + good)/(bad+good+neutral)}</td></tr>
-            <tr><td>positive</td><td>{(good/(bad+good+neutral)) * 100} %</td></tr>
+            <StatisticLine text="all" value ={bad+good+neutral} />
+            <StatisticLine text="average" value ={(bad * (-1) + good)/(bad+good+neutral)} />
+            <StatisticLine text="positive" value ={(good/(bad+good+neutral)) * 100} />
           </tbody>
         </table>
       

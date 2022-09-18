@@ -24,12 +24,9 @@ const App = () => {
 
   return (
     <div>
-      <div>
-      {anecdotes[selected]}
-      </div>
-      <div>
-        has {votes[selected]} votes 
-      </div>
+      <div><h1>Anecdote of the day</h1></div>
+      <div>{anecdotes[selected]}</div>
+      <div>has {votes[selected]} votes</div>
 
       <div>
       <button onClick={voteClick}>
@@ -39,6 +36,8 @@ const App = () => {
         next 
       </button>
       </div>
+      <div><h1>Anecdote with the most votes</h1></div>
+      <div>{anecdotes[votes.indexOf(Math.max(...votes))]}</div>
     </div>
   )
 }

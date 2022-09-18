@@ -7,7 +7,7 @@ const StatisticLine = (props) => {
 }
 
 const Statistics = (props) => {
-  const {good, neutral, bad} = props
+  const {good, neutral, bad} = props  // props destruction
 
   const checkStatistics = () => {
     if (bad+good+neutral === 0) {

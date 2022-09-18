@@ -27,7 +27,7 @@ const Statistics = (props) => {
             <StatisticLine text="bad" value ={bad} />
             <StatisticLine text="all" value ={bad+good+neutral} />
             <StatisticLine text="average" value ={(bad * (-1) + good)/(bad+good+neutral)} />
-            <StatisticLine text="positive" value ={(good/(bad+good+neutral)) * 100} />
+            <StatisticLine text="positive" value ={((good/(bad+good+neutral)) * 100) + ' %'} />
           </tbody>
         </table>
       

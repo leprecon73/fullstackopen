@@ -20,6 +20,7 @@ return (
 )
 }
 const Total = ({parts}) => {
+  // already done
   const exercisesSum = parts.map(x => x['exercises']).reduce((x,y) => (x+y)) // last year I passed course Scala at cs.aalto.fi
 
 return (

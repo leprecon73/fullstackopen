@@ -22,6 +22,8 @@ const App = () => {
     setVotes(copy)
   }
 
+  
+}
   return (
     <div>
       <div><h1>Anecdote of the day</h1></div>

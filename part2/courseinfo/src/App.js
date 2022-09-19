@@ -8,20 +8,23 @@ return (
 </div>
 )
 }
-const Content = (props) => {
+const Content = ({parts}) => {
+  
 return (
-<>
-  <Part p={props.parts[0]['name']} ex={props.parts[0]['exercises']}/>
-  <Part p={props.parts[1]['name']} ex={props.parts[1]['exercises']}/>
-  <Part p={props.parts[2]['name']} ex={props.parts[2]['exercises']}/>
-</>
+<div>
+  <Part p={parts[0]['name']} ex={parts[0]['exercises']}/>
+  <Part p={parts[1]['name']} ex={parts[1]['exercises']}/>
+  <Part p={parts[2]['name']} ex={parts[2]['exercises']}/>
+  <Part p={parts[3]['name']} ex={parts[3]['exercises']}/>
+</div>
 )
 }
-const Total = (props) => {
+const Total = ({parts}) => {
+  const exercisesSum = parts.map(x => x['exercises']).reduce((x,y) => (x+y)) // last year I passed course Scala at cs.aalto.fi
 
 return (
   <div>
-    <p>Number of exercises {props.parts[0]['exercises'] + props.parts[1]['exercises'] + props.parts[2]['exercises'] }</p>
+    <p><b>Total of {exercisesSum} exercises</b></p>
   </div>
 )
 }
@@ -45,6 +48,11 @@ const App = () => {
         name: 'State of a component',
         exercises: 14,
         id: 3
+      },
+      {
+        name: 'Redux',
+        exercises: 11,
+        id: 4
       }
     ]
   }
@@ -57,7 +65,7 @@ const Course = ({course}) => {
     <div>
         <Header course={course.name} />
         <Content parts={course.parts} />
-        {/*<Total parts={course.parts} /> */}
+        <Total parts={course.parts} /> 
     </div>
   )
 }

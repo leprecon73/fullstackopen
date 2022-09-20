@@ -1,19 +1,26 @@
 import { useState } from 'react'
 const Person = ({ person }) => {
   return (
-    <div>{person.name}</div>
+    <div>{person.name} {person.number}</div>
   )
 }
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas' }
+    { name: 'Arto Hellas', number: '040-1234567' }
   ]) 
   const [newName, setNewName] = useState('') //The newName state is meant for controlling the form input element.
                                              //Sometimes it can be useful to render state and other variables as text for debugging purposes.
+  const [newNumber, setNewNumber] = useState('')
+
   const handleNameChange = (event) => {
-    console.log(event.target.value)
+    console.log('handleNameChange: ',event.target.value)
     setNewName(event.target.value)
+  }
+
+  const handleNumberChange = (event) => {
+    console.log('handleNumberChange: ',event.target.value)
+    setNewNumber(event.target.value)
   }
 
   const addPerson = (event) => {
@@ -24,16 +31,17 @@ const App = () => {
       alert(`${newName} is already added to phonebook`)
     } else {
       const personObject = {
-        name: newName             
+        name: newName, number: newNumber             
       }
     
       setPersons(persons.concat(personObject))
       setNewName('')
     }
-  }
+    
+}
 
-  return (
-    <div>
+  return ( 
+    <div> 
       <h2>Phonebook</h2>
       <form onSubmit={addPerson}>
         <div>
@@ -43,18 +51,23 @@ const App = () => {
           />
         </div>
         <div>
+          number: <input 
+            value={newNumber}
+            onChange={handleNumberChange}
+          />
+        </div>
+        <div>
           <button type="submit">add</button>
         </div>
       </form>
       <h2>Numbers</h2>
       <div>
-      
         {persons.map(person =>
           <Person key={person.name} person={person} />
         )}
-      
       </div>
     </div>
+    
   )
 }
 

@@ -17,13 +17,19 @@ const App = () => {
   }
 
   const addPerson = (event) => {
-    event.preventDefault()      //The event handler immediately calls the event.preventDefault() method, which prevents
-    const personObject = {      //the default action of submitting a form. The default action would, among other things, cause the page to reload.
-      name: newName             
+    event.preventDefault()  //The event handler immediately calls the event.preventDefault() method, which prevents
+                            //the default action of submitting a form. The default action would, among other things, cause the page to reload.
+
+    if (persons.some(el => el.name === newName)) {
+      alert(`${newName} is already added to phonebook`)
+    } else {
+      const personObject = {
+        name: newName             
+      }
+    
+      setPersons(persons.concat(personObject))
+      setNewName('')
     }
-  
-    setPersons(persons.concat(personObject))
-    setNewName('')
   }
 
   return (

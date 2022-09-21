@@ -7,20 +7,37 @@ const Person = ({ person }) => {
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-1234567' }
+    { name: 'Arto Hellas', number: '040-123456', id: 1 },
+    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
+    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
+    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
   ]) 
   const [newName, setNewName] = useState('') //The newName state is meant for controlling the form input element.
                                              //Sometimes it can be useful to render state and other variables as text for debugging purposes.
   const [newNumber, setNewNumber] = useState('')
+  const [newFilter, setNewFilter] = useState('')
+  const [filteredPersons, setFilteredPersons] = useState(persons)
 
   const handleNameChange = (event) => {
-    console.log('handleNameChange: ',event.target.value)
+    //console.log('handleNameChange: ',event.target.value)
     setNewName(event.target.value)
   }
 
   const handleNumberChange = (event) => {
-    console.log('handleNumberChange: ',event.target.value)
+    //console.log('handleNumberChange: ',event.target.value)
     setNewNumber(event.target.value)
+  }
+
+  const handleFilter = (event) => {
+    setNewFilter(event.target.value)
+    
+    if (event.target.value === '') { // newFilter === '' wont work, late by one symbol in <form>
+      const fpersons = [...persons]
+      setFilteredPersons(fpersons)
+    } else {
+      const fpersons = persons.filter(e => e.name.toLowerCase().includes(event.target.value.toLowerCase()))
+      setFilteredPersons(fpersons)
+    }
   }
 
   const addPerson = (event) => {
@@ -31,18 +48,31 @@ const App = () => {
       alert(`${newName} is already added to phonebook`)
     } else {
       const personObject = {
-        name: newName, number: newNumber             
-      }
+        name: newName, number: newNumber, id:persons[persons.length-1].id+1
+       }
     
       setPersons(persons.concat(personObject))
+      
+      setFilteredPersons(persons.concat(personObject)) // ???
+      
       setNewName('')
     }
     
-}
+  }
 
   return ( 
     <div> 
       <h2>Phonebook</h2>
+      <form onSubmit={addPerson}>
+        <div>
+          filter shown with: <input 
+            value={newFilter}
+            onChange={handleFilter}
+          />
+        </div>
+      </form>
+
+      <h2>add a new</h2>
       <form onSubmit={addPerson}>
         <div>
           name: <input 
@@ -62,7 +92,7 @@ const App = () => {
       </form>
       <h2>Numbers</h2>
       <div>
-        {persons.map(person =>
+      {filteredPersons.map(person =>
           <Person key={person.name} person={person} />
         )}
       </div>

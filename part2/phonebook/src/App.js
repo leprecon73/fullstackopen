@@ -1,4 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+
+
 const Person = ({ person }) => {
   return (
     <div>{person.name} {person.number}</div>
@@ -51,17 +54,21 @@ const Filter = ({addPerson, newFilter, handleFilter}) => {
 }
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
-  ]) 
+  const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('') //The newName state is meant for controlling the form input element.
                                              //Sometimes it can be useful to render state and other variables as text for debugging purposes.
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
-  const [filteredPersons, setFilteredPersons] = useState(persons)
+  const [filteredPersons, setFilteredPersons] = useState([])
+
+  useEffect(() => {
+    axios
+      .get('http://localhost:3001/persons')
+      .then(response => {
+        setPersons(response.data)
+        setFilteredPersons(persons) // my bugg's
+      })
+  }, [])
 
   const handleNameChange = (event) => {
     //console.log('handleNameChange: ',event.target.value)
@@ -115,10 +122,7 @@ const App = () => {
                   newNumber = {newNumber} handleNumberChange = {handleNumberChange}/>
       
       <h2>Numbers</h2>
-      <div>
       <Persons filteredPersons = {filteredPersons} />
-
-      </div>
     </div>
     
   )

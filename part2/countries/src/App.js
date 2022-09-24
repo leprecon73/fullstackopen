@@ -20,8 +20,9 @@ const Country = ({ countries, filter }) => {
           capital {oneCountry.capital}<br />
           area {oneCountry.area}<br />
           <h3>languages:</h3>
+          <ul>
           {Object.values(oneCountry.languages).map((e, i) => <li key={i}>{e}</li>)}<br />
-
+          </ul>
           
           <img src={oneCountry.flags.png} height={'10%'} width={'10%'}></img>
         </div>

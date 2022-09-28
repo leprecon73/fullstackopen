@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
-const baseUrl = 'http://localhost:3001/persons'
-
+import Backend from './components/Backend'
 
 const Person = ({ person }) => {
   return (
@@ -63,11 +61,11 @@ const App = () => {
   const [filteredPersons, setFilteredPersons] = useState([])
   
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
+    Backend
+      .getAll()
       .then(response => {
         setPersons(response.data)
-        setFilteredPersons(persons) // my bugg's
+        setFilteredPersons(persons)
       })
   }, [])
 
@@ -100,21 +98,21 @@ const App = () => {
     if (persons.some(el => el.name === newName)) {
       alert(`${newName} is already added to phonebook`)
     } else {
-      const personObject = {
-        name: newName, number: newNumber, id:persons[persons.length-1].id+1
-       }
+        const personObject = {
+          name: newName, number: newNumber, id:persons[persons.length-1].id+1
+        }
     
       setPersons(persons.concat(personObject))
-      setFilteredPersons(persons.concat(personObject)) // ???
+      setFilteredPersons(persons.concat(personObject)) 
       setNewName('')
-
-
-      // adding data through json server to db.json by lamer's way
-      const request1 = axios.post(baseUrl, personObject)
-      request1.then(response => response.data)
-      const request2 = axios.put(`${baseUrl}/${personObject.id}`, personObject)
-      request2.then(response => response.data)
       
+      Backend
+        .create(personObject)    
+        .then(response => response.data)
+      Backend
+        .update(personObject.id, personObject)
+        .then(response => response.data)
+    
     }
     
   }

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+const baseUrl = 'http://localhost:3001/persons'
 
 
 const Person = ({ person }) => {
@@ -60,7 +61,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
   const [filteredPersons, setFilteredPersons] = useState([])
-
+  
   useEffect(() => {
     axios
       .get('http://localhost:3001/persons')
@@ -104,10 +105,16 @@ const App = () => {
        }
     
       setPersons(persons.concat(personObject))
-      
       setFilteredPersons(persons.concat(personObject)) // ???
-      
       setNewName('')
+
+
+      // adding data through json server to db.json by lamer's way
+      const request1 = axios.post(baseUrl, personObject)
+      request1.then(response => response.data)
+      const request2 = axios.put(`${baseUrl}/${personObject.id}`, personObject)
+      request2.then(response => response.data)
+      
     }
     
   }

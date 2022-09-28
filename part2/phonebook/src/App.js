@@ -1,11 +1,6 @@
 import { useState, useEffect } from 'react'
 import Backend from './components/Backend'
 
-const Person = ({ person }) => {
-  return (
-    <div>{person.name} {person.number}</div>
-  )
-}
 
 const PersonForm = ({addPerson,newName,handleNameChange,newNumber,handleNumberChange}) => {
   return (
@@ -29,10 +24,12 @@ const PersonForm = ({addPerson,newName,handleNameChange,newNumber,handleNumberCh
   )
 }
 
-const Persons = ({filteredPersons}) => {
+const Persons = ({filteredPersons, handleDeleteClick}) => {
   return (
     <div>
-      {filteredPersons.map(person =><Person key={person.id} person={person}/> )} 
+      {filteredPersons.map(person =><li key={person.id}> {person.name} {person.number} 
+        <button onClick={() => handleDeleteClick(person.id)}>delete</button>
+      </li> )} 
     </div>
   )
 }
@@ -68,6 +65,17 @@ const App = () => {
         setFilteredPersons(persons)
       })
   }, [])
+
+  const handleDeleteClick = (id) => {
+    setPersons(persons.filter(person => person.id !== id))
+    setFilteredPersons(persons)
+
+    if (window.confirm(`Delete ${id}`)) {
+      Backend
+        .del(id)
+            
+    } 
+  }
 
   const handleNameChange = (event) => {
     //console.log('handleNameChange: ',event.target.value)
@@ -123,11 +131,11 @@ const App = () => {
       <Filter addPerson={addPerson} newFilter={newFilter} handleFilter={handleFilter}/>
 
       <h2>add a new</h2>
-      <PersonForm addPerson = {addPerson} newName = {newName} handleNameChange={handleNameChange}
-                  newNumber = {newNumber} handleNumberChange = {handleNumberChange}/>
+      <PersonForm addPerson={addPerson} newName={newName} handleNameChange={handleNameChange}
+                  newNumber={newNumber} handleNumberChange={handleNumberChange}/>
       
       <h2>Numbers</h2>
-      <Persons filteredPersons = {filteredPersons} />
+      <Persons filteredPersons={filteredPersons} handleDeleteClick={handleDeleteClick}/>
     </div>
     
   )

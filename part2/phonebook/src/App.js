@@ -35,7 +35,6 @@ const Persons = ({filteredPersons, handleDeleteClick}) => {
 }
 
 const Filter = ({addPerson, newFilter, handleFilter}) => {
-
   return (
     <form onSubmit={addPerson}>
         <div>
@@ -46,8 +45,19 @@ const Filter = ({addPerson, newFilter, handleFilter}) => {
         </div>
     </form>
   )
-
 }
+const Notification = ({ updateMessage }) => {
+  if (updateMessage === null) {
+    return null
+  }
+
+  return (
+    <div className='added'>
+      {updateMessage}
+    </div>
+  )
+}
+
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
@@ -57,6 +67,8 @@ const App = () => {
   const [newFilter, setNewFilter] = useState('')
   
   const [filteredPersons, setFilteredPersons] = useState([])
+  //const [errorMessage, setErrorMessage] = useState(null)
+  const [updateMessage, setUpdateMessage] = useState(null)
   
   useEffect(() => {
     Backend
@@ -113,9 +125,7 @@ const App = () => {
          const newPerson = {
           name: newName, number: newNumber, id:persons[persons.length-1].id+1
          }
-        // must be - in one operation: delete element, then add new 
-        setPersons(persons.filter(el => el.name !== newName).concat(newPerson))
-        setFilteredPersons(persons.filter(el => el.name !== newName).concat(newPerson)) 
+        
                       
         Backend
           .create(newPerson)    
@@ -123,19 +133,20 @@ const App = () => {
         Backend
           .update(newPerson.id, newPerson)
           .then(response => response.data)
-        
-        setNewName('')
-        setNewNumber('')
+          .finally(() => {
+            setUpdateMessage(`${newPerson.name} number is changed`)
+            //console.log('updated new number'); // updated new number
+            // must be - in one operation: delete element, then add new one
+            setPersons(persons.filter(el => el.name !== newName).concat(newPerson))
+            setFilteredPersons(persons.filter(el => el.name !== newName).concat(newPerson)) 
+            setNewName('')
+            setNewNumber('')
+          })
       } 
     } else {
       const newPerson = {
         name: newName, number: newNumber, id:persons[persons.length-1].id+1
        }
-    
-      setPersons(persons.concat(newPerson))
-      setFilteredPersons(persons.concat(newPerson)) 
-      setNewName('')
-      setNewNumber('')
       
       Backend
         .create(newPerson)    
@@ -143,12 +154,22 @@ const App = () => {
       Backend
         .update(newPerson.id, newPerson)
         .then(response => response.data)
+        .finally(() => {
+          setUpdateMessage(`Added ${newPerson.name}`)
+          //console.log('inserted new person'); // inserted new person
+          setPersons(persons.concat(newPerson))
+          setFilteredPersons(persons.concat(newPerson)) 
+          setNewName('')
+          setNewNumber('')
+        })
     }
   }
 
   return ( 
     <div> 
       <h2>Phonebook</h2>
+      <Notification updateMessage={updateMessage} />
+
       <Filter addPerson={addPerson} newFilter={newFilter} handleFilter={handleFilter}/>
 
       <h2>add a new</h2>

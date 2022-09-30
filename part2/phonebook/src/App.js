@@ -55,6 +55,7 @@ const App = () => {
                                              //Sometimes it can be useful to render state and other variables as text for debugging purposes.
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  
   const [filteredPersons, setFilteredPersons] = useState([])
   
   useEffect(() => {
@@ -68,12 +69,11 @@ const App = () => {
 
   const handleDeleteClick = (id) => {
     setPersons(persons.filter(person => person.id !== id))
-    setFilteredPersons(persons)
+    setFilteredPersons(persons.filter(person => person.id !== id))
 
     if (window.confirm(`Delete ${id}`)) {
       Backend
         .del(id)
-            
     } 
   }
 
@@ -101,28 +101,49 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault()  //The event handler immediately calls the event.preventDefault() method, which prevents
-                            //the default action of submitting a form. The default action would, among other things, cause the page to reload.
-
-    if (persons.some(el => el.name === newName)) {
-      alert(`${newName} is already added to phonebook`)
-    } else {
-        const personObject = {
-          name: newName, number: newNumber, id:persons[persons.length-1].id+1
-        }
+    //                        the default action of submitting a form. The default action would, among other things, cause the page to reload.
     
-      setPersons(persons.concat(personObject))
-      setFilteredPersons(persons.concat(personObject)) 
+    if (persons.some(el => el.name === newName)) {
+      
+      if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+
+        Backend
+         .del(persons.find(el => el.name === newName).id)
+
+         const newPerson = {
+          name: newName, number: newNumber, id:persons[persons.length-1].id+1
+         }
+        // must be - in one operation: delete element, then add new 
+        setPersons(persons.filter(el => el.name !== newName).concat(newPerson))
+        setFilteredPersons(persons.filter(el => el.name !== newName).concat(newPerson)) 
+                      
+        Backend
+          .create(newPerson)    
+          .then(response => response.data)
+        Backend
+          .update(newPerson.id, newPerson)
+          .then(response => response.data)
+        
+        setNewName('')
+        setNewNumber('')
+      } 
+    } else {
+      const newPerson = {
+        name: newName, number: newNumber, id:persons[persons.length-1].id+1
+       }
+    
+      setPersons(persons.concat(newPerson))
+      setFilteredPersons(persons.concat(newPerson)) 
       setNewName('')
+      setNewNumber('')
       
       Backend
-        .create(personObject)    
+        .create(newPerson)    
         .then(response => response.data)
       Backend
-        .update(personObject.id, personObject)
+        .update(newPerson.id, newPerson)
         .then(response => response.data)
-    
     }
-    
   }
 
   return ( 

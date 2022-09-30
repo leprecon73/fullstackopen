@@ -80,12 +80,13 @@ const App = () => {
   }, [])
 
   const handleDeleteClick = (id) => {
-    setPersons(persons.filter(person => person.id !== id))
-    setFilteredPersons(persons.filter(person => person.id !== id))
-
-    if (window.confirm(`Delete ${id}`)) {
+    if (window.confirm(`Delete ${id}`)) { 
       Backend
         .del(id)
+        .finally(() => {
+          setPersons(persons.filter(person => person.id !== id))
+          setFilteredPersons(persons.filter(person => person.id !== id))
+        })
     } 
   }
 
@@ -118,15 +119,13 @@ const App = () => {
     if (persons.some(el => el.name === newName)) {
       
       if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
-
         Backend
          .del(persons.find(el => el.name === newName).id)
 
          const newPerson = {
           name: newName, number: newNumber, id:persons[persons.length-1].id+1
          }
-        
-                      
+
         Backend
           .create(newPerson)    
           .then(response => response.data)

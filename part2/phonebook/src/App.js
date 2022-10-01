@@ -85,7 +85,7 @@ const App = () => {
   }, [])
 
   const handleDeleteClick = (id, name) => {
-    if (window.confirm(`Delete ${id}`)) { 
+    if (window.confirm(`Delete ${name}`)) { 
 
       Backend
         .getAll()

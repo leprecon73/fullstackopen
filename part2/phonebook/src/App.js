@@ -28,7 +28,7 @@ const Persons = ({filteredPersons, handleDeleteClick}) => {
   return (
     <div>
       {filteredPersons.map(person =><li key={person.id}> {person.name} {person.number} 
-        <button onClick={() => handleDeleteClick(person.id)}>delete</button>
+        <button onClick={() => handleDeleteClick(person.id, person.name)}>delete</button>
       </li> )} 
     </div>
   )
@@ -47,17 +47,22 @@ const Filter = ({addPerson, newFilter, handleFilter}) => {
   )
 }
 const Notification = ({ updateMessage }) => {
-  if (updateMessage === null) {
+  if (updateMessage[0] !== null) {
+    return (
+      <div className='added'>
+        {updateMessage}
+      </div>
+    )  
+  } else if (updateMessage[1] !== null) {
+    return (
+      <div className='error'>
+        {updateMessage}
+      </div>
+    )  
+  } else {
     return null
   }
-
-  return (
-    <div className='added'>
-      {updateMessage}
-    </div>
-  )
 }
-
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
@@ -68,24 +73,38 @@ const App = () => {
   
   const [filteredPersons, setFilteredPersons] = useState([])
   //const [errorMessage, setErrorMessage] = useState(null)
-  const [updateMessage, setUpdateMessage] = useState(null)
-  
+  const [updateMessage, setUpdateMessage] = useState([null,null])
+    
   useEffect(() => {
     Backend
       .getAll()
       .then(response => {
         setPersons(response.data)
-        setFilteredPersons(persons)
+        setFilteredPersons(persons) // or response.data to show them all at start
       })
   }, [])
 
-  const handleDeleteClick = (id) => {
+  const handleDeleteClick = (id, name) => {
     if (window.confirm(`Delete ${id}`)) { 
+
       Backend
-        .del(id)
-        .finally(() => {
-          setPersons(persons.filter(person => person.id !== id))
-          setFilteredPersons(persons.filter(person => person.id !== id))
+        .getAll()
+        .then(response => {
+
+          if (!response.data.some(e => e.id === id)) {
+            setUpdateMessage([null,`Information of ${name} has already been removed from server`])
+            setPersons(response.data)
+            setFilteredPersons(response.data)
+          } else {
+            
+            Backend
+              .del(id)
+              .finally(() => {
+                setPersons(persons.filter(person => person.id !== id))
+                setFilteredPersons(persons.filter(person => person.id !== id))
+                setUpdateMessage([null, null])
+              })
+          }
         })
     } 
   }
@@ -116,9 +135,14 @@ const App = () => {
     event.preventDefault()  //The event handler immediately calls the event.preventDefault() method, which prevents
     //                        the default action of submitting a form. The default action would, among other things, cause the page to reload.
     
+    if (newName === '') {
+      return
+    }
+
     if (persons.some(el => el.name === newName)) {
       
       if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+        
         Backend
          .del(persons.find(el => el.name === newName).id)
 
@@ -133,7 +157,7 @@ const App = () => {
           .update(newPerson.id, newPerson)
           .then(response => response.data)
           .finally(() => {
-            setUpdateMessage(`${newPerson.name} number is changed`)
+            setUpdateMessage([`${newPerson.name} number is changed`, null])
             //console.log('updated new number'); // updated new number
             // must be - in one operation: delete element, then add new one
             setPersons(persons.filter(el => el.name !== newName).concat(newPerson))
